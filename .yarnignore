@@ -1,0 +1,6 @@
+# Exclude everything at the top level
+*
+.*
+
+# Except these specific paths.
+!lib/**
