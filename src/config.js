@@ -5,6 +5,7 @@
 import dotenv from 'dotenv';
 
 export type Config = {|
+  numberSystemArray: $ReadOnlyArray<string>,
   pgUrl: string,
   debug: boolean,
 |};
@@ -15,6 +16,16 @@ function requireEnv(fieldName: string): string {
     throw new Error(`Missing required environment variable: ${fieldName}`);
   }
   return val;
+}
+
+function validateNumberSystem(numberSystemStr: string): $ReadOnlyArray<string> {
+  const validationSet = new Set();
+  const numSystemArray = numberSystemStr.split('');
+  numSystemArray.forEach(val => validationSet.add(val));
+  if (numSystemArray.length < validationSet.size) {
+    throw new Error(`'NUMBER_SYSTEM_CHARACTERS' contained duplicate characters: ${numberSystemStr}`);
+  }
+  return numSystemArray;
 }
 
 export default function getConfig(): Config {
@@ -30,9 +41,12 @@ export default function getConfig(): Config {
   } = process.env;
 
   const debug = NODE_ENV === 'development';
+  const numberSystemStr = requireEnv('NUMBER_SYSTEM_CHARACTERS');
+  const numberSystemArray = validateNumberSystem(numberSystemStr);
 
   return {
     pgUrl: requireEnv('DATABASE_URI'),
+    numberSystemArray,
     debug,
   };
 }
