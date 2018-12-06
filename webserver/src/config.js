@@ -45,7 +45,7 @@ export default function getConfig(): Config {
   const numberSystemArray = validateNumberSystem(numberSystemStr);
 
   return {
-    pgUrl: requireEnv('DATABASE_URI'),
+    pgUrl: requireEnv('DATABASE_URL'),
     numberSystemArray,
     debug,
   };
