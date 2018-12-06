@@ -34,9 +34,32 @@ app.post('/getlink', async (req: Request, res: Response) => {
     },
   } = req;
   const linkInstance = await getVisitedLink(url);
-  const shortUrl = await encodeObjectId(numberSystemArray, linkInstance.id);
+  const shortUrl = encodeObjectId(numberSystemArray, linkInstance.id);
   return res.json({
     link: `http://${req.headers.host}/${shortUrl}`,
+  });
+});
+app.get('/toplinks', async (req: Request, res: Response) => {
+  const {numberSystemArray} = getConfig();
+  const {
+    query: {
+      first: limit,
+      offset,
+    },
+  } = req;
+  const links = await Link.findAll({
+    order: [
+      ['count', 'DESC'],
+    ],
+    limit,
+    offset,
+  });
+  return res.json({
+    topLinks: links.map(link => ({
+      originalUrl: link.url,
+      shortUrl: `http://${req.headers.host}/${encodeObjectId(numberSystemArray, link.id)}`,
+      count: link.count,
+    })),
   });
 });
 app.get('/:shortLinkValue', async (req: Request, res: Response) => {
