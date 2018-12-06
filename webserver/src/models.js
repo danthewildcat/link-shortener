@@ -4,7 +4,7 @@ import getConfig from './config';
 
 const {pgUrl} = getConfig();
 
-const sequelize = new Sequelize(pgUrl);
+export const sequelize = new Sequelize(pgUrl);
 
 export type LinkType = {
   +id: number,
@@ -19,7 +19,7 @@ export const Link = sequelize.define('visited_link', {
     unique: true,
   },
   count: {
-    type: Sequelize.BIGINT,
+    type: Sequelize.INTEGER,
     defaultValue: 1,
   },
 }, {
